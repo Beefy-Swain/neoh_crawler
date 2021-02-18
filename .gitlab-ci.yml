@@ -1,0 +1,44 @@
+image: "python:3.8"
+
+before_script:
+  - python --version
+  - python -m pip install -e ".[tests]"
+
+stages:
+  - Linting
+  - Testing
+
+gitlint:
+  stage: Linting
+  script:
+  - gitlint
+  allow_failure: true
+
+pylint:
+  stage: Linting
+  script:
+  - pylint --rcfile=.pylintrc app
+  allow_failure: true
+
+black:
+  stage: Linting
+  script:
+  - black --check ./
+  allow_failure: true
+
+mypy:
+  stage: Linting
+  script:
+  - mypy app
+  allow_failure: true
+
+isort:
+  stage: Linting
+  script:
+  - isort --check
+  allow_failure: true
+
+pytest:
+  stage: Testing
+  script:
+  - pytest -v --cov=app
